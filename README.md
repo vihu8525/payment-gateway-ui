@@ -60,7 +60,7 @@ This project simulates a real payment flow including validation, payment lifecyc
 
 ---
 
-## 🛠️ Tech Stack
+##  Tech Stack
 
 - Next.js (App Router)
 - TypeScript
@@ -69,7 +69,7 @@ This project simulates a real payment flow including validation, payment lifecyc
 
 ---
 
-## 📂 Folder Structure
+## Folder Structure
 app/
 api/pay/route.ts
 page.tsx
