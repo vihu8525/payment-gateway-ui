@@ -1,36 +1,98 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Payment Gateway UI (Next.js + TypeScript)
 
-## Getting Started
+A mock Payment Gateway UI built using **Next.js (App Router)** and **TypeScript** without using any third-party payment SDKs (Stripe, Razorpay, PayPal, etc.).  
+This project simulates a real payment flow including validation, payment lifecycle handling, retry logic, and transaction history persistence.
 
-First, run the development server:
+---
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+##  Features
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+###  Payment Form
+- Cardholder Name
+- Card Number (auto formatted: `4242 4242 4242 4242`)
+- Expiry Date validation (MM/YY format, past dates rejected)
+- CVV validation (3 digits, 4 digits for Amex)
+- Amount input
+- Currency selector (INR / USD)
+- Real-time field validation
+- Submit button disabled until form is valid
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+###  Card Handling
+- Detect card type (Visa / Mastercard / Amex)
+- Card preview updates live while typing
+- Card flip animation when entering CVV (shows back side)
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+###  Payment Lifecycle States
+- Idle
+- Processing
+- Success
+- Failed
+- Timeout
 
-## Learn More
+###  Gateway Simulation (API Route)
+- `POST /api/pay`
+- Random outcomes:
+  - Success ~60%
+  - Failed ~25% with reason message
+  - Timeout simulation ~15% (delayed response)
 
-To learn more about Next.js, take a look at the following resources:
+###  Timeout Handling
+- Frontend cancels request after 6 seconds using `AbortController`
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+###  Retry Logic
+- Retry available for Failed or Timeout payments
+- Maximum 3 attempts per transaction
+- Attempt count shown to user
+- Same transaction ID reused for retries (idempotency)
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+###  Transaction History
+- Stores transactions with:
+  - Transaction ID
+  - Amount + Currency
+  - Status
+  - Timestamp
+  - Attempts
+- History persists using `localStorage`
+- Clicking a transaction shows details in a modal
 
-## Deploy on Vercel
+###  Responsive UI
+- Works on mobile (375px) and desktop (1280px)
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+---
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## 🛠️ Tech Stack
+
+- Next.js (App Router)
+- TypeScript
+- Zustand (state management)
+- CSS Modules
+
+---
+
+## 📂 Folder Structure
+app/
+api/pay/route.ts
+page.tsx
+layout.tsx
+globals.css
+
+components/
+PaymentForm/
+CardPreview/
+StatusScreen/
+TransactionHistory/
+TransactionModal/
+
+hooks/
+usePayment.ts
+
+store/
+paymentStore.ts
+
+utils/
+cardUtils.ts
+validation.ts
+uuid.ts
+
+types/
+index.ts
